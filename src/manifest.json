@@ -1,0 +1,33 @@
+{
+	"manifest_version": 2,
+	"name": "Aumentacion",
+	"version": "1.0",
+	
+	"content_scripts": [{
+		"matches": ["<all_urls>"],
+		"js": [
+			"content_scripts/main.js"
+		],
+		"css": [
+		]
+	}],
+
+	"browser_action": {
+		"default_icon": {
+			"64": "resources/logo.png"
+		},
+		"default_title": "Aumentacion"
+	},
+
+	"background": {
+		"scripts": [
+			"background_scripts/main.js"
+		]
+	},
+
+	"permissions": [
+	    "*",
+	    "tabs",
+	    "storage"
+	  ]
+}
