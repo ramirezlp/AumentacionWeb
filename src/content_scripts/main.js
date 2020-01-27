@@ -6,58 +6,9 @@ class Result {
         document.body.appendChild(div);
         //console.log($('nav').children())
     }
-    retrieveGoogleSearch(){
-        var results = {};
-        var oReq = new XMLHttpRequest();
-        oReq.onload = function(e){
-            var parser = new DOMParser ();
-            var responseDoc = parser.parseFromString (oReq.response, "text/html");
-            var organicResults = responseDoc.getElementsByClassName("r");
-            for (var i=0; i < organicResults.length; i++){
-                var link = organicResults[i].firstChild;
-                results[link.lastChild.textContent]=link.getAttribute('href');
-            }
-            console.log(results);
-        }
-        oReq.open("GET","https://www.google.com/search?q=estudiantes");
-        oReq.send();   
-    }
-    retrieveBingSearch(){
-        var results = {};
-        var oReq = new XMLHttpRequest();
-        oReq.onload = function(e){
-            var parser = new DOMParser ();
-            var responseDoc = parser.parseFromString (oReq.response, "text/html");
-            var organicResults = responseDoc.getElementsByClassName("b_algo");
-            for (var i=0; i < organicResults.length; i++){
-                var link = organicResults[i].firstChild.firstChild;
-                results[link.textContent]=link.getAttribute('href');
-            }
-            console.log(results);
-        }
-        oReq.open("GET","https://www.bing.com/search?q=estudiantes");
-        oReq.send();   
-    }
 
-    retrieveDuckDuckGoSearch(){
-        console.log('hola')
-        var results = {};
-        var oReq = new XMLHttpRequest();
-        oReq.onload = function(e){
-            var parser = new DOMParser ();
-            var responseDoc = parser.parseFromString (oReq.response, "text/html");
-            console.log(responseDoc)
-            var organicResults = responseDoc.getElementsByClassName("result");
-            console.log(organicResults)
-            for (var i=0; i < organicResults.length; i++){
-                var link = organicResults[i];
-                console.log(link)
-                //results[link.textContent]=link.getAttribute('href');
-            }
-            //console.log(results);
-        }
-        oReq.open("GET","https://duckduckgo.com/html/?q=estudiantes&t=h_&ia=web");
-        oReq.send();   
+    retrieveSearch(res){
+        console.log(res);
     }
 
     createContainer(width, height, left, top) {
@@ -81,8 +32,6 @@ class Result {
             .filter(a => !isNaN(a)).sort().pop();
     }
 }
-
-
 
 var pageManager = new Result();
 
