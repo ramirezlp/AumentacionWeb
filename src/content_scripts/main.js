@@ -38,8 +38,8 @@ class Result {
         oReq.open("GET","https://www.bing.com/search?q=estudiantes");
         oReq.send();   
     }
-  
-  /*  retrieveDuckDuckGoSearch(){
+
+    retrieveDuckDuckGoSearch(){
         console.log('hola')
         var results = {};
         var oReq = new XMLHttpRequest();
@@ -56,10 +56,10 @@ class Result {
             }
             //console.log(results);
         }
-        oReq.open("GET","https://duckduckgo.com/?q=estudiantes&t=h_&ia=web");
+        oReq.open("GET","https://duckduckgo.com/html/?q=estudiantes&t=h_&ia=web");
         oReq.send();   
     }
-    */
+
     createContainer(width, height, left, top) {
         var div = document.createElement("div");
         div.style.width = width;
