@@ -13,14 +13,6 @@ class Result {
     }
 
     addIcons(args){
-        console.log(args[0]);
-        for (var key in args[0]) {
-            console.log(args[0][key]);
-        }
-        console.log(args[1]);
-        for (var key in args[1]) {
-            console.log(args[1][key]);
-        }
         var resultados = document.getElementsByClassName(args[4]);
         for (var i=0; i < resultados.length; i++){
             var existe1 = 0;
@@ -64,7 +56,6 @@ class Result {
                 }
                 
                 div1.appendChild(tex1);
-                //res.appendChild(div1);
 
                 var img2 = document.createElement("img");
                 img2.src = args[3];
@@ -85,7 +76,6 @@ class Result {
                 }
 
                 div2.appendChild(tex2);
-                //res.appendChild(div2);
 
                 var divrow = document.createElement("div");
                 divrow.classList.add("row");
@@ -104,6 +94,21 @@ class Result {
                 res.appendChild(divcon);
 
             } else if (args[4] == "rc") {
+
+                for (var key in args[0]){
+                    pos1 = pos1 + 1;
+                    if (args[0][key] == resultados[i].firstChild.firstChild.getAttribute('href')){
+                        existe1 = pos1;
+                    }
+                }
+
+                for (var key in args[1]){
+                    pos2 = pos2 + 1;
+                    if (args[1][key] == resultados[i].firstChild.firstChild.getAttribute('href')){
+                        existe2 = pos2;
+                    }
+                }
+
                 var res = resultados[i].firstChild;
 
                 var img1 = document.createElement("img");
@@ -118,9 +123,14 @@ class Result {
                 tex1.style.color = 'red';
                 tex1.style.fontSize = 'large';
                 tex1.classList.add("top-right-g");
-                tex1.innerHTML+="11";
+
+                if (existe1 == 0){
+                    tex1.innerHTML+="-";
+                } else{
+                    tex1.innerHTML+=existe1;
+                }
+
                 div1.appendChild(tex1);
-                //res.appendChild(div1);
 
                 var img2 = document.createElement("img");
                 img2.src = args[3];
@@ -134,9 +144,14 @@ class Result {
                 tex2.style.color = 'red';
                 tex2.style.fontSize = 'large';
                 tex2.classList.add("top-right-g");
-                tex2.innerHTML+="22";
+
+                if (existe2 == 0){
+                    tex2.innerHTML+="-";
+                } else{
+                    tex2.innerHTML+=existe2;
+                }
+
                 div2.appendChild(tex2);
-                //res.appendChild(div2);
 
                 var divrow = document.createElement("div");
                 divrow.classList.add("row");
@@ -155,6 +170,21 @@ class Result {
                 res.appendChild(divcon);
 
             } else {
+
+                for (var key in args[0]){
+                    pos1 = pos1 + 1;
+                    if (args[0][key] == resultados[i].firstChild.firstChild.getAttribute('href')){
+                        existe1 = pos1;
+                    }
+                }
+
+                for (var key in args[1]){
+                    pos2 = pos2 + 1;
+                    if (args[1][key] == resultados[i].firstChild.firstChild.getAttribute('href')){
+                        existe2 = pos2;
+                    }
+                }
+
                 var res = resultados[i].firstChild.firstChild;
 
                 var img1 = document.createElement("img");
@@ -168,9 +198,14 @@ class Result {
                 var tex1 = document.createElement("div");
                 tex1.style.color = 'red';
                 tex1.classList.add("top-right-b");
-                tex1.innerHTML+="11";
+
+                if (existe1 == 0){
+                    tex1.innerHTML+="-";
+                } else{
+                    tex1.innerHTML+=existe1;
+                }
+
                 div1.appendChild(tex1);
-                //res.appendChild(div1);
 
                 var img2 = document.createElement("img");
                 img2.src = args[3];
@@ -183,9 +218,14 @@ class Result {
                 var tex2 = document.createElement("div");
                 tex2.style.color = 'red';
                 tex2.classList.add("top-right-b");
-                tex2.innerHTML+="22";
+                
+                if (existe2 == 0){
+                    tex2.innerHTML+="-";
+                } else{
+                    tex2.innerHTML+=existe2;
+                }
+
                 div2.appendChild(tex2);
-                //res.appendChild(div2);
 
                 var divrow = document.createElement("div");
                 divrow.classList.add("row");
