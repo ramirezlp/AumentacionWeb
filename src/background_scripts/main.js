@@ -57,9 +57,9 @@ class BackgroundResult {
         oReq.onload = function(e){
             var parser = new DOMParser ();
             var responseDoc = parser.parseFromString (oReq.response, "text/html");
-            var organicResults = responseDoc.getElementsByClassName("result__a");
+            var organicResults = responseDoc.getElementsByClassName("result__body");
             for (var i=0; i < organicResults.length; i++){
-                var link = organicResults[i];
+                var link = organicResults[i].firstChild.firstChild;
                 results[link.textContent]=link.getAttribute('href');
             }
             extension.getCurrentTab().then((tabs) => {
