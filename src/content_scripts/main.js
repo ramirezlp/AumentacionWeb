@@ -11,6 +11,15 @@ class Result {
         console.log(res);
     }
 
+    retrieveResultados(img){
+        var resultados = document.getElementsByClassName("b_algo");
+        var img = document.createElement("img");
+        img.src = "https://img.utdstc.com/icons/duckduckgo-search-and-stories-android.png:l"
+        for (var i=0; i < resultados.length; i++){
+            resultados[i].firstChild.firstChild.appendChild(img);
+        }
+    }
+
     createContainer(width, height, left, top) {
         var div = document.createElement("div");
         div.style.width = width;

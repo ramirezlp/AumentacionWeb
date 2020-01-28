@@ -73,6 +73,14 @@ class BackgroundResult {
         oReq.send();   
     }
 
+    retrieveResultados(){
+        extension.getCurrentTab().then((tabs) => {
+            browser.tabs.sendMessage(tabs[0].id, {
+                call: "retrieveResultados"
+            });
+        });
+    }
+
     getCurrentTab(callback) {
         return browser.tabs.query({
             active: true,
@@ -84,6 +92,7 @@ class BackgroundResult {
 var extension = new BackgroundResult();
 browser.browserAction.onClicked.addListener(() => {
     extension.consultarSitio();
+    extension.retrieveResultados();
     extension.retrieveDuckDuckGoSearch();
 });
 
