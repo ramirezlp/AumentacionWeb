@@ -267,9 +267,25 @@ class Result {
             .map(a => parseFloat(window.getComputedStyle(a).zIndex))
             .filter(a => !isNaN(a)).sort().pop();
     }
+
+    getString(sitio){
+        return document.getElementsByClassName(sitio)[0].getAttribute("value");
+    }
 }
 
 var pageManager = new Result();
+var sitio = pageManager.consultarSitio();
+if (sitio == "https://www.bing.com") {
+    var busca = pageManager.getString("b_searchbox");
+    browser.runtime.sendMessage({call: "retrieveForBing", args: busca});
+} else if (sitio == "https://www.google.com") {
+    var busca = pageManager.getString("gLFyf");
+    console.log(busca);
+    browser.runtime.sendMessage({call: "retrieveForGoogle", args: busca});
+} else {
+    var busca = pageManager.getString("search__input");
+    browser.runtime.sendMessage({call: "retrieveForDuck", args: busca});
+}
 
 //Listening for background's messages
 browser.runtime.onMessage.addListener((request, sender) => {

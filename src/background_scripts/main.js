@@ -51,11 +51,12 @@ class BackgroundResult {
     //    oReq.send();   
     //}
 
-    retrieveForBing(){
-        this.retrieveDuckForB();
+    retrieveForBing(busca){
+        var busqueda = extension.parsearString(busca);
+        this.retrieveDuckForB(busqueda);
     }
 
-    retrieveDuckForB(){
+    retrieveDuckForB(busca){
         var results = {};
         var oReq = new XMLHttpRequest();
         oReq.onload = function(e){
@@ -66,13 +67,13 @@ class BackgroundResult {
                 var link = organicResults[i].childNodes[3].childNodes[1];
                 results[link.textContent]=link.getAttribute('href');
             }
-            extension.retrieveGoogleForB(results);
+            extension.retrieveGoogleForB(results, busca);
         }
-        oReq.open("GET","https://duckduckgo.com/html/?q=estudiantes");
+        oReq.open("GET","https://duckduckgo.com/html/?q=" + busca);
         oReq.send();   
     }
 
-    retrieveGoogleForB(resD){
+    retrieveGoogleForB(resD, busca){
         var results = {};
         var oReq = new XMLHttpRequest();
         oReq.onload = function(e){
@@ -90,15 +91,16 @@ class BackgroundResult {
                 });
             });
         }
-        oReq.open("GET","https://www.google.com/search?q=estudiantes");
+        oReq.open("GET","https://www.google.com/search?q=" + busca);
         oReq.send();   
     }
 
-    retrieveForGoogle(){
-        this.retrieveDuckForG();
+    retrieveForGoogle(busca){
+        var busqueda = extension.parsearString(busca);
+        this.retrieveDuckForG(busqueda);
     }
 
-    retrieveDuckForG(){
+    retrieveDuckForG(busca){
         var results = {};
         var oReq = new XMLHttpRequest();
         oReq.onload = function(e){
@@ -109,13 +111,13 @@ class BackgroundResult {
                 var link = organicResults[i].childNodes[3].childNodes[1];
                 results[link.textContent]=link.getAttribute('href');
             }
-            extension.retrieveBingForG(results);
+            extension.retrieveBingForG(results, busca);
         }
-        oReq.open("GET","https://duckduckgo.com/html/?q=estudiantes");
+        oReq.open("GET","https://duckduckgo.com/html/?q=" + busca);
         oReq.send();   
     }
 
-    retrieveBingForG(resD){
+    retrieveBingForG(resD, busca){
         var results = {};
         var oReq = new XMLHttpRequest();
         oReq.onload = function(e){
@@ -133,15 +135,16 @@ class BackgroundResult {
                 });
             });
         }
-        oReq.open("GET","https://www.bing.com/search?q=estudiantes");
+        oReq.open("GET","https://www.bing.com/search?q=" + busca);
         oReq.send();   
     }
 
-    retrieveForDuck(){
-        this.retrieveBingForD();
+    retrieveForDuck(busca){
+        var busqueda = extension.parsearString(busca);
+        this.retrieveBingForD(busca);
     }
 
-    retrieveBingForD(){
+    retrieveBingForD(busca){
         var results = {};
         var oReq = new XMLHttpRequest();
         oReq.onload = function(e){
@@ -152,13 +155,13 @@ class BackgroundResult {
                 var link = organicResults[i].firstChild.firstChild;
                 results[link.textContent]=link.getAttribute('href');
             }
-            extension.retrieveGoogleForD(results);
+            extension.retrieveGoogleForD(results, busca);
         }
-        oReq.open("GET","https://www.bing.com/search?q=estudiantes");
+        oReq.open("GET","https://www.bing.com/search?q=" + busca);
         oReq.send();   
     }
 
-    retrieveGoogleForD(resD){
+    retrieveGoogleForD(resD, busca){
         var results = {};
         var oReq = new XMLHttpRequest();
         oReq.onload = function(e){
@@ -176,7 +179,7 @@ class BackgroundResult {
                 });
             });
         }
-        oReq.open("GET","https://www.google.com/search?q=estudiantes");
+        oReq.open("GET","https://www.google.com/search?q=" + busca);
         oReq.send();   
     }
 
@@ -201,6 +204,10 @@ class BackgroundResult {
     //    oReq.open("GET","https://duckduckgo.com/html/?q=estudiantes");
     //    oReq.send();   
     //}
+
+    parsearString(busqueda){
+        return busqueda.replace(" ", "+");
+    }
 
     retrieveResultados(){
         extension.getCurrentTab().then((tabs) => {
