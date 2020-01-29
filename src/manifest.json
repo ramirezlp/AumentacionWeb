@@ -30,7 +30,8 @@
 		"default_icon": {
 			"64": "resources/logo.png"
 		},
-		"default_title": "Aumentacion"
+		"default_popup": "popup.html",
+		"default_title": "Mashup Results"
 	},
 
 	"background": {

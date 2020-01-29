@@ -271,6 +271,18 @@ class Result {
     getString(sitio){
         return document.getElementsByClassName(sitio)[0].getAttribute("value");
     }
+
+    giveStringBack(){
+        var sitio = pageManager.consultarSitio();
+        if (sitio == "https://www.bing.com") {
+            var data = document.getElementsByClassName("b_searchbox")[0].getAttribute("value");
+        } else if (sitio == "https://www.google.com") {
+            var data = document.getElementsByClassName("gLFyf")[0].getAttribute("value");
+        } else {
+            var data = document.getElementsByClassName("search__input")[0].getAttribute("value");
+        }
+        browser.runtime.sendMessage({call: "dataPopUp", args: data});
+    }
 }
 
 var pageManager = new Result();

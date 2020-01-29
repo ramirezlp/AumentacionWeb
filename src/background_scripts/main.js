@@ -7,49 +7,60 @@ class BackgroundResult {
         });
     }
 
-    //retrieveBingSearch(){
-    //    var results = {};
-    //    var oReq = new XMLHttpRequest();
-    //    oReq.onload = function(e){
-    //        var parser = new DOMParser ();
-    //        var responseDoc = parser.parseFromString (oReq.response, "text/html");
-    //        var organicResults = responseDoc.getElementsByClassName("b_algo");
-    //        for (var i=0; i < organicResults.length; i++){
-    //            var link = organicResults[i].firstChild.firstChild;
-    //            results[link.textContent]=link.getAttribute('href');
-    //        }
-    //        extension.getCurrentTab().then((tabs) => {
-    //            browser.tabs.sendMessage(tabs[0].id, {
-    //                call: "retrieveSearch",
-    //                args: results
-    //            });
-    //        });
-    //    }
-    //    oReq.open("GET","https://www.bing.com/search?q=estudiantes");
-    //    oReq.send();   
-    //}
+    //-----------Busca para el PopUp-----------//
 
-    //retrieveGoogleSearch(){
-    //    var results = {};
-    //    var oReq = new XMLHttpRequest();
-    //    oReq.onload = function(e){
-    //        var parser = new DOMParser ();
-    //        var responseDoc = parser.parseFromString (oReq.response, "text/html");
-    //        var organicResults = responseDoc.getElementsByClassName("rc");
-    //        for (var i=0; i < organicResults.length; i++){
-    //            var link = organicResults[i].firstChild.firstChild;
-    //            results[link.lastChild.textContent]=link.getAttribute('href');
-    //        }
-    //        extension.getCurrentTab().then((tabs) => {
-    //            browser.tabs.sendMessage(tabs[0].id, {
-    //                call: "retrieveSearch",
-    //                args: results
-    //            });
-    //        });
-    //    }
-    //    oReq.open("GET","https://www.google.com/search?q=estudiantes");
-    //    oReq.send();   
-    //}
+    retrieveBingSearch(busca){
+        var results = [];
+        var oReq = new XMLHttpRequest();
+        oReq.onload = function(e){
+            var parser = new DOMParser ();
+            var responseDoc = parser.parseFromString (oReq.response, "text/html");
+            var organicResults = responseDoc.getElementsByClassName("b_algo");
+            for (var i=0; i < organicResults.length; i++){
+                var link = organicResults[i].firstChild.firstChild;
+                results.push(link.getAttribute('href'));
+            }
+            extension.retrieveGoogleSearch(results, busca);
+        }
+        oReq.open("GET","https://www.bing.com/search?q=" + busca);
+        oReq.send();   
+    }
+
+    retrieveGoogleSearch(resB, busca){
+        var results = [];
+        var oReq = new XMLHttpRequest();
+        oReq.onload = function(e){
+            var parser = new DOMParser ();
+            var responseDoc = parser.parseFromString (oReq.response, "text/html");
+            var organicResults = responseDoc.getElementsByClassName("rc");
+            for (var i=0; i < organicResults.length; i++){
+                var link = organicResults[i].firstChild.firstChild;
+                results.push(link.getAttribute('href'));
+            }
+            extension.retrieveDuckDuckGoSearch(results, resB, busca);
+        }
+        oReq.open("GET","https://www.google.com/search?q=" + busca);
+        oReq.send();   
+    }
+
+    retrieveDuckDuckGoSearch(resG, resB, busca){
+        var results = [];
+        var oReq = new XMLHttpRequest();
+        oReq.onload = function(e){
+            var parser = new DOMParser ();
+            var responseDoc = parser.parseFromString (oReq.response, "text/html");
+            var organicResults = responseDoc.getElementsByClassName("result__body");
+            for (var i=0; i < organicResults.length; i++){
+                var link = organicResults[i].childNodes[3].childNodes[1];
+                results.push(link.getAttribute('href'));
+            }
+            browser.runtime.sendMessage({call: "obtengoDatos", args: [resG, resB, results]});
+        }
+        oReq.open("GET","https://duckduckgo.com/html/?q=" + busca);
+        oReq.send();   
+    }
+
+    //-----------Busca para Bing-----------//
 
     retrieveForBing(busca){
         var busqueda = extension.parsearString(busca);
@@ -95,6 +106,8 @@ class BackgroundResult {
         oReq.send();   
     }
 
+    //-----------Busca para Google-----------//
+
     retrieveForGoogle(busca){
         var busqueda = extension.parsearString(busca);
         this.retrieveDuckForG(busqueda);
@@ -138,6 +151,8 @@ class BackgroundResult {
         oReq.open("GET","https://www.bing.com/search?q=" + busca);
         oReq.send();   
     }
+
+    //-----------Busca para Duck-----------//
 
     retrieveForDuck(busca){
         var busqueda = extension.parsearString(busca);
@@ -183,27 +198,6 @@ class BackgroundResult {
         oReq.send();   
     }
 
-    //retrieveDuckDuckGoSearch(){
-    //    var results = {};
-    //    var oReq = new XMLHttpRequest();
-    //    oReq.onload = function(e){
-    //        var parser = new DOMParser ();
-    //        var responseDoc = parser.parseFromString (oReq.response, "text/html");
-    //        var organicResults = responseDoc.getElementsByClassName("result__body");
-    //        for (var i=0; i < organicResults.length; i++){
-    //            var link = organicResults[i].firstChild.firstChild;
-    //            results[link.textContent]=link.getAttribute('href');
-    //        }
-    //        extension.getCurrentTab().then((tabs) => {
-    //            browser.tabs.sendMessage(tabs[0].id, {
-    //                call: "retrieveSearch",
-    //                args: results
-    //            });
-    //        });
-    //    }
-    //    oReq.open("GET","https://duckduckgo.com/html/?q=estudiantes");
-    //    oReq.send();   
-    //}
 
     parsearString(busqueda){
         return busqueda.replace(" ", "+");
@@ -223,13 +217,16 @@ class BackgroundResult {
             currentWindow: true
         });
     }
+
+    dataPopUp(busca){
+        var busqueda = extension.parsearString(busca);
+        extension.retrieveBingSearch(busqueda);
+    }
 }
 
 var extension = new BackgroundResult();
 browser.browserAction.onClicked.addListener(() => {
-    extension.consultarSitio();
-    extension.retrieveResultados();
-    extension.retrieveDuckDuckGoSearch();
+
 });
 
 browser.runtime.onMessage.addListener((request, sender) => {
