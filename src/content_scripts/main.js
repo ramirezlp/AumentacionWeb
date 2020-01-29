@@ -280,11 +280,14 @@ if (sitio == "https://www.bing.com") {
     browser.runtime.sendMessage({call: "retrieveForBing", args: busca});
 } else if (sitio == "https://www.google.com") {
     var busca = pageManager.getString("gLFyf");
-    console.log(busca);
     browser.runtime.sendMessage({call: "retrieveForGoogle", args: busca});
 } else {
-    var busca = pageManager.getString("search__input");
-    browser.runtime.sendMessage({call: "retrieveForDuck", args: busca});
+    if (document.location == "https://duckduckgo.com/html/"){
+        var busca = pageManager.getString("search__input");
+        browser.runtime.sendMessage({call: "retrieveForDuck", args: busca});
+    } else {
+        document.location.replace("https://duckduckgo.com/html/");
+    }
 }
 
 //Listening for background's messages
