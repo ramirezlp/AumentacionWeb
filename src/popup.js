@@ -15,14 +15,6 @@ class PopUp{
                 var t = document.createTextNode(link);
                 h.appendChild(t);
                 div.appendChild(h);
-                //var a = document.createElement("a");
-                //var t = document.createTextNode(link);
-                //a.appendChild(t);
-                //a.tittle = link;
-                //a.href = link;
-                //div.appendChild(a);
-                //var br = document.createElement("br");
-                //div.appendChild(br);
             }
         }
     }

@@ -18,8 +18,8 @@
 			"content_scripts/main.js"
 		],
 		"css": [
-			"resources/bootstrap.css",
-			"resources/bootstrap-grid.css",
+			"node_modules/bootstrap/dist/css/bootstrap.css",
+			"node_modules/bootstrap/dist/css/bootstrap-grid.css",
 			"resources/main.css",
 			"node_modules/jqcloud2/dist/jqcloud.min.css"
 		]

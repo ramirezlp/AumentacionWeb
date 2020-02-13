@@ -1,17 +1,7 @@
 class Result {
     consultarSitio() {
-        console.log('Te encuentras en:', document.location['origin']);
-        //document.querySelector("body").style["background-color"] = "yellow";
-        //var div = this.createContainer("300px", window.innerHeight + "px", (window.innerWidth - 300) + "px", "0px");
-        //document.body.appendChild(div);
-        //console.log($('nav').children())
         return document.location['origin'];
     }
-
-    retrieveSearch(res){
-        console.log(res);
-    }
-
     addIcons(args){
         var resultados = document.getElementsByClassName(args[4]);
         for (var i=0; i < resultados.length; i++){
@@ -281,7 +271,7 @@ class Result {
         } else {
             var data = document.getElementsByClassName("search__input")[0].getAttribute("value");
         }
-        browser.runtime.sendMessage({call: "dataPopUp", args: data});
+        browser.runtime.sendMessage({call: "popUpResults", args: data});
     }
 }
 
@@ -289,15 +279,19 @@ var pageManager = new Result();
 var sitio = pageManager.consultarSitio();
 if (sitio == "https://www.bing.com") {
     var busca = pageManager.getString("b_searchbox");
-    browser.runtime.sendMessage({call: "retrieveForBing", args: busca});
+    console.log('busca_bing',busca)
+    browser.runtime.sendMessage({call: "retrieveSearchResults", args: [busca, 'BingEngine']});
 } else if (sitio == "https://www.google.com") {
     var busca = pageManager.getString("gLFyf");
-    browser.runtime.sendMessage({call: "retrieveForGoogle", args: busca});
+    console.log('busca_google',busca)
+    browser.runtime.sendMessage({call: "retrieveSearchResults", args: [busca, 'GoogleEngine']});
 } else {
     if (document.location == "https://duckduckgo.com/html/"){
         var busca = pageManager.getString("search__input");
-        browser.runtime.sendMessage({call: "retrieveForDuck", args: busca});
+        browser.runtime.sendMessage({call: "retrieveSearchResults", args: [busca, 'DuckDuckGoEngine']});
+        console.log('busca_duckduck',busca)
     } else {
+        console.log('entra aca')
         document.location.replace("https://duckduckgo.com/html/");
     }
 }
