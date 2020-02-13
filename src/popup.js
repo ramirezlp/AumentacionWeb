@@ -1,20 +1,21 @@
 class PopUp{
 
     obtengoDatos(args){
+        var engines = {
+            0: 'Google',
+            1: 'Bing',
+            2: 'DuckDuckGo' 
+        }
         for (var i=1; i < 6; i++){
             var div = document.getElementById(i);
             for (var j=0; j <3; j++){
-                if (j == 0){
-                    var link = i + " resultado de Google: " + args[j][i-1];
-                } else if ( j == 1){
-                    var link = i + " resultado de Bing: " + args[j][i-1];
-                } else if ( j ==2 ){
-                    var link = i + " resultado de Duck: " + args[j][i-1];
-                }
-                var h = document.createElement("H4");
-                var t = document.createTextNode(link);
-                h.appendChild(t);
-                div.appendChild(h);
+                var a = document.createElement("A");
+                a.setAttribute('href',args[j][i-1]);
+                a.setAttribute('target','_blank');
+                a.textContent = i + ' resultado de ' + engines[j];
+                var p = document.createElement('P');
+                p.appendChild(a);
+                div.appendChild(p);
             }
         }
     }

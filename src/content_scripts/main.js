@@ -2,29 +2,29 @@ class Result {
     consultarSitio() {
         return document.location['origin'];
     }
-    addIcons(args){
+    addIcons(args) {
         var resultados = document.getElementsByClassName(args[4]);
-        for (var i=0; i < resultados.length; i++){
+        for (var i = 0; i < resultados.length; i++) {
             var existe1 = 0;
             var existe2 = 0;
             var pos1 = 0;
             var pos2 = 0;
-            if (args[4] == "result__body"){
+            if (args[4] == "result__body") {
 
-                for (var key in args[0]){
+                for (var key in args[0]) {
                     pos1 = pos1 + 1;
-                    if (args[0][key] == resultados[i].childNodes[3].childNodes[1].getAttribute('href')){
+                    if (args[0][key] == resultados[i].childNodes[3].childNodes[1].getAttribute('href')) {
                         existe1 = pos1;
                     }
                 }
 
-                for (var key in args[1]){
+                for (var key in args[1]) {
                     pos2 = pos2 + 1;
-                    if (args[1][key] == resultados[i].childNodes[3].childNodes[1].getAttribute('href')){
+                    if (args[1][key] == resultados[i].childNodes[3].childNodes[1].getAttribute('href')) {
                         existe2 = pos2;
                     }
                 }
-                
+
                 var res = resultados[i].childNodes[3];
 
                 var img1 = document.createElement("img");
@@ -39,12 +39,12 @@ class Result {
                 tex1.style.color = 'red';
                 tex1.classList.add("top-right-d");
 
-                if (existe1 == 0){
-                    tex1.innerHTML+="-";
-                } else{
-                    tex1.innerHTML+=existe1;
+                if (existe1 == 0) {
+                    tex1.innerHTML += "-";
+                } else {
+                    tex1.innerHTML += existe1;
                 }
-                
+
                 div1.appendChild(tex1);
 
                 var img2 = document.createElement("img");
@@ -59,10 +59,10 @@ class Result {
                 tex2.style.color = 'red';
                 tex2.classList.add("top-right-d");
 
-                if (existe2 == 0){
-                    tex2.innerHTML+="-";
-                } else{
-                    tex2.innerHTML+=existe2;
+                if (existe2 == 0) {
+                    tex2.innerHTML += "-";
+                } else {
+                    tex2.innerHTML += existe2;
                 }
 
                 div2.appendChild(tex2);
@@ -85,16 +85,16 @@ class Result {
 
             } else if (args[4] == "rc") {
 
-                for (var key in args[0]){
+                for (var key in args[0]) {
                     pos1 = pos1 + 1;
-                    if (args[0][key] == resultados[i].firstChild.firstChild.getAttribute('href')){
+                    if (args[0][key] == resultados[i].firstChild.firstChild.getAttribute('href')) {
                         existe1 = pos1;
                     }
                 }
 
-                for (var key in args[1]){
+                for (var key in args[1]) {
                     pos2 = pos2 + 1;
-                    if (args[1][key] == resultados[i].firstChild.firstChild.getAttribute('href')){
+                    if (args[1][key] == resultados[i].firstChild.firstChild.getAttribute('href')) {
                         existe2 = pos2;
                     }
                 }
@@ -114,10 +114,10 @@ class Result {
                 tex1.style.fontSize = 'large';
                 tex1.classList.add("top-right-g");
 
-                if (existe1 == 0){
-                    tex1.innerHTML+="-";
-                } else{
-                    tex1.innerHTML+=existe1;
+                if (existe1 == 0) {
+                    tex1.innerHTML += "-";
+                } else {
+                    tex1.innerHTML += existe1;
                 }
 
                 div1.appendChild(tex1);
@@ -135,10 +135,10 @@ class Result {
                 tex2.style.fontSize = 'large';
                 tex2.classList.add("top-right-g");
 
-                if (existe2 == 0){
-                    tex2.innerHTML+="-";
-                } else{
-                    tex2.innerHTML+=existe2;
+                if (existe2 == 0) {
+                    tex2.innerHTML += "-";
+                } else {
+                    tex2.innerHTML += existe2;
                 }
 
                 div2.appendChild(tex2);
@@ -161,16 +161,16 @@ class Result {
 
             } else {
 
-                for (var key in args[0]){
+                for (var key in args[0]) {
                     pos1 = pos1 + 1;
-                    if (args[0][key] == resultados[i].firstChild.firstChild.getAttribute('href')){
+                    if (args[0][key] == resultados[i].firstChild.firstChild.getAttribute('href')) {
                         existe1 = pos1;
                     }
                 }
 
-                for (var key in args[1]){
+                for (var key in args[1]) {
                     pos2 = pos2 + 1;
-                    if (args[1][key] == resultados[i].firstChild.firstChild.getAttribute('href')){
+                    if (args[1][key] == resultados[i].firstChild.firstChild.getAttribute('href')) {
                         existe2 = pos2;
                     }
                 }
@@ -189,10 +189,10 @@ class Result {
                 tex1.style.color = 'red';
                 tex1.classList.add("top-right-b");
 
-                if (existe1 == 0){
-                    tex1.innerHTML+="-";
-                } else{
-                    tex1.innerHTML+=existe1;
+                if (existe1 == 0) {
+                    tex1.innerHTML += "-";
+                } else {
+                    tex1.innerHTML += existe1;
                 }
 
                 div1.appendChild(tex1);
@@ -208,11 +208,11 @@ class Result {
                 var tex2 = document.createElement("div");
                 tex2.style.color = 'red';
                 tex2.classList.add("top-right-b");
-                
-                if (existe2 == 0){
-                    tex2.innerHTML+="-";
-                } else{
-                    tex2.innerHTML+=existe2;
+
+                if (existe2 == 0) {
+                    tex2.innerHTML += "-";
+                } else {
+                    tex2.innerHTML += existe2;
                 }
 
                 div2.appendChild(tex2);
@@ -258,11 +258,11 @@ class Result {
             .filter(a => !isNaN(a)).sort().pop();
     }
 
-    getString(sitio){
+    getString(sitio) {
         return document.getElementsByClassName(sitio)[0].getAttribute("value");
     }
 
-    giveStringBack(){
+    giveStringBack() {
         var sitio = pageManager.consultarSitio();
         if (sitio == "https://www.bing.com") {
             var data = document.getElementsByClassName("b_searchbox")[0].getAttribute("value");
@@ -271,7 +271,10 @@ class Result {
         } else {
             var data = document.getElementsByClassName("search__input")[0].getAttribute("value");
         }
-        browser.runtime.sendMessage({call: "popUpResults", args: data});
+        browser.runtime.sendMessage({
+            call: "popUpResults",
+            args: data
+        });
     }
 }
 
@@ -279,17 +282,26 @@ var pageManager = new Result();
 var sitio = pageManager.consultarSitio();
 if (sitio == "https://www.bing.com") {
     var busca = pageManager.getString("b_searchbox");
-    console.log('busca_bing',busca)
-    browser.runtime.sendMessage({call: "retrieveSearchResults", args: [busca, 'BingEngine']});
+    console.log('busca_bing', busca)
+    browser.runtime.sendMessage({
+        call: "retrieveSearchResults",
+        args: [busca, 'BingEngine']
+    });
 } else if (sitio == "https://www.google.com") {
     var busca = pageManager.getString("gLFyf");
-    console.log('busca_google',busca)
-    browser.runtime.sendMessage({call: "retrieveSearchResults", args: [busca, 'GoogleEngine']});
+    console.log('busca_google', busca)
+    browser.runtime.sendMessage({
+        call: "retrieveSearchResults",
+        args: [busca, 'GoogleEngine']
+    });
 } else {
-    if (document.location == "https://duckduckgo.com/html/"){
+    if (document.location == "https://duckduckgo.com/html/") {
         var busca = pageManager.getString("search__input");
-        browser.runtime.sendMessage({call: "retrieveSearchResults", args: [busca, 'DuckDuckGoEngine']});
-        console.log('busca_duckduck',busca)
+        browser.runtime.sendMessage({
+            call: "retrieveSearchResults",
+            args: [busca, 'DuckDuckGoEngine']
+        });
+        console.log('busca_duckduck', busca)
     } else {
         console.log('entra aca')
         document.location.replace("https://duckduckgo.com/html/");
