@@ -129,24 +129,12 @@ class BackgroundResult {
         return busqueda.replace(" ", "+");
     }
 
-    retrieveResultados() {
-        extension.getCurrentTab().then((tabs) => {
-            browser.tabs.sendMessage(tabs[0].id, {
-                call: "retrieveResultados"
-            });
-        });
-    }
 
     getCurrentTab(callback) {
         return browser.tabs.query({
             active: true,
             currentWindow: true
         });
-    }
-
-    dataPopUp(busca) {
-        var busqueda = extension.parsearString(busca);
-        extension.retrieveBingSearch(busqueda);
     }
 }
 

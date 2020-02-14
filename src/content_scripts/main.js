@@ -1,261 +1,117 @@
+class SearchEngineContent {
+    constructor() {
+        if (this.constructor == SearchEngineContent) {
+            throw new Error("Abstract classes can't be instantiated.");
+        }
+    }
+
+    createIcon(srcImage, position) {
+        var img = document.createElement("img");
+        img.src = srcImage;
+        img.style.height = '25px';
+        img.style.width = '25px';
+        var div = document.createElement("div");
+        div.classList.add("col-sm-2");
+        div.classList.add("container");
+        div.appendChild(img);
+        var text = document.createElement("div");
+        text.style.color = 'red';
+        text.classList.add("top-right-d");
+
+        (position == 0) ? text.innerHTML += '-': text.innerHTML += position;
+        div.appendChild(text);
+        return div
+    }
+
+    takeResultPosition(results, element) {
+        var position = 0;
+        var exist = 0;
+        for (var key in results) {
+            console.log(this.getResultUrl(element))
+            var compare = this.getResultUrl(element);
+            if (compare) {
+                compare = compare.split('https://').join('');
+                compare = compare.split('http://').join('').trim();
+            }
+            var keyCompare = results[key]
+            if (keyCompare){
+            keyCompare = keyCompare.split('https://').join('')
+            keyCompare = keyCompare.split('http://').join('').trim();
+            }
+            position = position + 1;
+            if ((keyCompare || compare) && (keyCompare == compare)) {
+                exist = position;
+            }
+        }
+        return exist;
+    }
+
+    addIconsForResults(args) {
+        var results = document.getElementsByClassName(args[4]);
+        for (var i = 0; i < results.length; i++) {
+            var existOne = this.takeResultPosition(args[0], results[i]);
+            var existTwo = this.takeResultPosition(args[1], results[i]);
+            var divrow = document.createElement("div");
+            divrow.classList.add("row");
+
+            var relleno = document.createElement("div");
+            relleno.classList.add("col-sm-8");
+            divrow.appendChild(relleno);
+
+            divrow.appendChild(this.createIcon(args[2], existOne));
+            divrow.appendChild(this.createIcon(args[3], existTwo));
+
+            var divcon = document.createElement("div");
+            divcon.classList.add("container");
+            divcon.appendChild(divrow);
+            this.getOrganicElement(results[i]).appendChild(divcon);
+        }
+    }
+}
+class GoogleEngineContent extends SearchEngineContent {
+    getOrganicElement(result) {
+        return result.firstChild;
+    }
+    getResultUrl(result) {
+        return result.firstChild.firstChild.getAttribute('href');
+    }
+}
+class BingEngineContent extends SearchEngineContent {
+    getOrganicElement(result) {
+        return result.firstChild.firstChild;
+    }
+    getResultUrl(result) {
+        return result.firstChild.firstChild.getAttribute('href');
+    }
+}
+class DuckDuckGoEngineContent extends SearchEngineContent {
+    getOrganicElement(result) {
+        return result.childNodes[3]
+    }
+    getResultUrl(result) {
+        return result.childNodes[3].childNodes[1].getAttribute('href')
+    }
+
+}
+
 class Result {
     consultarSitio() {
         return document.location['origin'];
     }
+
     addIcons(args) {
-        var resultados = document.getElementsByClassName(args[4]);
-        for (var i = 0; i < resultados.length; i++) {
-            var existe1 = 0;
-            var existe2 = 0;
-            var pos1 = 0;
-            var pos2 = 0;
-            if (args[4] == "result__body") {
-
-                for (var key in args[0]) {
-                    pos1 = pos1 + 1;
-                    if (args[0][key] == resultados[i].childNodes[3].childNodes[1].getAttribute('href')) {
-                        existe1 = pos1;
-                    }
-                }
-
-                for (var key in args[1]) {
-                    pos2 = pos2 + 1;
-                    if (args[1][key] == resultados[i].childNodes[3].childNodes[1].getAttribute('href')) {
-                        existe2 = pos2;
-                    }
-                }
-
-                var res = resultados[i].childNodes[3];
-
-                var img1 = document.createElement("img");
-                img1.src = args[2];
-                img1.style.height = '25px';
-                img1.style.width = '25px';
-                var div1 = document.createElement("div");
-                div1.classList.add("col-sm-2");
-                div1.classList.add("container");
-                div1.appendChild(img1);
-                var tex1 = document.createElement("div");
-                tex1.style.color = 'red';
-                tex1.classList.add("top-right-d");
-
-                if (existe1 == 0) {
-                    tex1.innerHTML += "-";
-                } else {
-                    tex1.innerHTML += existe1;
-                }
-
-                div1.appendChild(tex1);
-
-                var img2 = document.createElement("img");
-                img2.src = args[3];
-                img2.style.height = '25px';
-                img2.style.width = '25px';
-                var div2 = document.createElement("div");
-                div2.classList.add("col-sm-2");
-                div2.classList.add("container");
-                div2.appendChild(img2);
-                var tex2 = document.createElement("div");
-                tex2.style.color = 'red';
-                tex2.classList.add("top-right-d");
-
-                if (existe2 == 0) {
-                    tex2.innerHTML += "-";
-                } else {
-                    tex2.innerHTML += existe2;
-                }
-
-                div2.appendChild(tex2);
-
-                var divrow = document.createElement("div");
-                divrow.classList.add("row");
-
-                var relleno = document.createElement("div");
-                relleno.classList.add("col-sm-8");
-                divrow.appendChild(relleno);
-
-                divrow.appendChild(div1);
-                divrow.appendChild(div2);
-
-                var divcon = document.createElement("div");
-                divcon.classList.add("container");
-                divcon.appendChild(divrow);
-
-                res.appendChild(divcon);
-
-            } else if (args[4] == "rc") {
-
-                for (var key in args[0]) {
-                    pos1 = pos1 + 1;
-                    if (args[0][key] == resultados[i].firstChild.firstChild.getAttribute('href')) {
-                        existe1 = pos1;
-                    }
-                }
-
-                for (var key in args[1]) {
-                    pos2 = pos2 + 1;
-                    if (args[1][key] == resultados[i].firstChild.firstChild.getAttribute('href')) {
-                        existe2 = pos2;
-                    }
-                }
-
-                var res = resultados[i].firstChild;
-
-                var img1 = document.createElement("img");
-                img1.src = args[2];
-                img1.style.height = '30px';
-                img1.style.width = '30px';
-                var div1 = document.createElement("div");
-                div1.classList.add("col-sm-2");
-                div1.classList.add("container");
-                div1.appendChild(img1);
-                var tex1 = document.createElement("div");
-                tex1.style.color = 'red';
-                tex1.style.fontSize = 'large';
-                tex1.classList.add("top-right-g");
-
-                if (existe1 == 0) {
-                    tex1.innerHTML += "-";
-                } else {
-                    tex1.innerHTML += existe1;
-                }
-
-                div1.appendChild(tex1);
-
-                var img2 = document.createElement("img");
-                img2.src = args[3];
-                img2.style.height = '25px';
-                img2.style.width = '25px';
-                var div2 = document.createElement("div");
-                div2.classList.add("col-sm-2");
-                div2.classList.add("container");
-                div2.appendChild(img2);
-                var tex2 = document.createElement("div");
-                tex2.style.color = 'red';
-                tex2.style.fontSize = 'large';
-                tex2.classList.add("top-right-g");
-
-                if (existe2 == 0) {
-                    tex2.innerHTML += "-";
-                } else {
-                    tex2.innerHTML += existe2;
-                }
-
-                div2.appendChild(tex2);
-
-                var divrow = document.createElement("div");
-                divrow.classList.add("row");
-
-                var relleno = document.createElement("div");
-                relleno.classList.add("col-sm-8");
-                divrow.appendChild(relleno);
-
-                divrow.appendChild(div1);
-                divrow.appendChild(div2);
-
-                var divcon = document.createElement("div");
-                divcon.classList.add("container");
-                divcon.appendChild(divrow);
-
-                res.appendChild(divcon);
-
+        var engineContent;
+        if (args[4] == 'rc') {
+            engineContent = new GoogleEngineContent();
+        } else {
+            if (args[4] == 'b_algo') {
+                engineContent = new BingEngineContent();
             } else {
-
-                for (var key in args[0]) {
-                    pos1 = pos1 + 1;
-                    if (args[0][key] == resultados[i].firstChild.firstChild.getAttribute('href')) {
-                        existe1 = pos1;
-                    }
-                }
-
-                for (var key in args[1]) {
-                    pos2 = pos2 + 1;
-                    if (args[1][key] == resultados[i].firstChild.firstChild.getAttribute('href')) {
-                        existe2 = pos2;
-                    }
-                }
-
-                var res = resultados[i].firstChild.firstChild;
-
-                var img1 = document.createElement("img");
-                img1.src = args[2];
-                img1.style.height = '30px';
-                img1.style.width = '30px';
-                var div1 = document.createElement("div");
-                div1.classList.add("col-sm-2");
-                div1.classList.add("container");
-                div1.appendChild(img1);
-                var tex1 = document.createElement("div");
-                tex1.style.color = 'red';
-                tex1.classList.add("top-right-b");
-
-                if (existe1 == 0) {
-                    tex1.innerHTML += "-";
-                } else {
-                    tex1.innerHTML += existe1;
-                }
-
-                div1.appendChild(tex1);
-
-                var img2 = document.createElement("img");
-                img2.src = args[3];
-                img2.style.height = '28px';
-                img2.style.width = '28px';
-                var div2 = document.createElement("div");
-                div2.classList.add("col-sm-2");
-                div2.classList.add("container");
-                div2.appendChild(img2);
-                var tex2 = document.createElement("div");
-                tex2.style.color = 'red';
-                tex2.classList.add("top-right-b");
-
-                if (existe2 == 0) {
-                    tex2.innerHTML += "-";
-                } else {
-                    tex2.innerHTML += existe2;
-                }
-
-                div2.appendChild(tex2);
-
-                var divrow = document.createElement("div");
-                divrow.classList.add("row");
-
-                var relleno = document.createElement("div");
-                relleno.classList.add("col-sm-8");
-                divrow.appendChild(relleno);
-
-                divrow.appendChild(div1);
-                divrow.appendChild(div2);
-
-                var divcon = document.createElement("div");
-                divcon.classList.add("container");
-                divcon.appendChild(divrow);
-
-                res.appendChild(divcon);
+                engineContent = new DuckDuckGoEngineContent();
             }
-
         }
-    }
-
-    createContainer(width, height, left, top) {
-        var div = document.createElement("div");
-        div.style.width = width;
-        div.style.height = height;
-        div.style.position = "fixed";
-        div.style.background = "white";
-        div.style.top = top;
-        div.style.left = left;
-        div.style.zIndex = this.getMaxZindex() + 1;
-
-        div.onclick = function () {
-            this.remove();
-        }
-        return div;
-    }
-    getMaxZindex() {
-        return Array.from(document.querySelectorAll('body *'))
-            .map(a => parseFloat(window.getComputedStyle(a).zIndex))
-            .filter(a => !isNaN(a)).sort().pop();
+        console.log(args)
+        engineContent.addIconsForResults(args);
     }
 
     getString(sitio) {
@@ -282,14 +138,12 @@ var pageManager = new Result();
 var sitio = pageManager.consultarSitio();
 if (sitio == "https://www.bing.com") {
     var busca = pageManager.getString("b_searchbox");
-    console.log('busca_bing', busca)
     browser.runtime.sendMessage({
         call: "retrieveSearchResults",
         args: [busca, 'BingEngine']
     });
 } else if (sitio == "https://www.google.com") {
     var busca = pageManager.getString("gLFyf");
-    console.log('busca_google', busca)
     browser.runtime.sendMessage({
         call: "retrieveSearchResults",
         args: [busca, 'GoogleEngine']
@@ -301,9 +155,7 @@ if (sitio == "https://www.bing.com") {
             call: "retrieveSearchResults",
             args: [busca, 'DuckDuckGoEngine']
         });
-        console.log('busca_duckduck', busca)
     } else {
-        console.log('entra aca')
         document.location.replace("https://duckduckgo.com/html/");
     }
 }
