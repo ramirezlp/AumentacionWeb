@@ -183,7 +183,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     docs.dato = args[0];
     docs.automatic = true;
     docs.withoutcheck = true;
-    this.sendRequest(docs, "All");
+    this.sendRequest(JSON.stringify(docs), "All");
   }
 
   parsearString(busqueda) {
@@ -231,14 +231,14 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
       await engine.asyncRetrieveSearch(msg.dato).then((jsonNews) => {
         console.log("News obtained, preparing to send response");
         console.log(jsonNews);
-        this.sendResponse({
+        this.sendResponse(JSON.stringify({
             metodo: "engineResults",
             results: jsonNews,
             buscador: msg.buscadorUtilizado,
             className: engine.organicResultClass,
             automatic: true,
             withoutcheck: true,
-          },
+          }),
           peer
         );
         console.log("Response sent");
