@@ -93,7 +93,21 @@ class DuckDuckGoEngine extends SearchEngine {
   }
 }
 
-class BackgroundResult {
+class BackgroundResult extends AbstractP2PExtensionBackground {
+  peers = [];
+
+  constructor() {
+    super();
+  }
+
+  getExtensionName() {
+    return "aumentacion_web";
+  }
+
+  getExtensionId() {
+    return "aumentacion@web";
+  }
+
   consultarSitio() {
     this.getCurrentTab().then((tabs) => {
       browser.tabs.sendMessage(tabs[0].id, {
@@ -146,6 +160,84 @@ class BackgroundResult {
       currentWindow: true,
     });
   }
+  async automaticProcessing(msg, peer) {
+    console.log("Automatic procesing request...");
+    console.log("Pedido de: " + peer);
+    await this.retrieveNewsFromAPI(msg.keywords).then((jsonNews) => {
+      console.log("News obtained, preparing to send response");
+      console.log(jsonNews);
+      this.sendResponse(
+        {
+          news: jsonNews,
+          keywords: msg.keywords,
+          automatic: true,
+          withoutcheck: true,
+        },
+        peer
+      );
+      console.log("Response sent");
+    });
+  }
+  /*
+  async retrieveNewsFromAPI(keywords) {
+    return new Promise((resolve, reject) => {
+      var oReq = new XMLHttpRequest();
+      oReq.onload = function (e) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(oReq.response, "text/html");
+        browser.storage.local.get("config").then((data) => {
+          var news = doc.querySelectorAll(data.config.apiXpath);
+          var jsonNews = [];
+          news.forEach((elem) =>
+            jsonNews.push({
+              text: elem.getElementsByTagName("a")[0].innerText,
+              url: elem.getElementsByTagName("a")[0].href,
+            })
+          );
+          resolve(jsonNews);
+        });
+      };
+      oReq.onerror = function (e) {
+        resolve([]);
+        console.log(e);
+      };
+      browser.storage.local.get("config").then((data) => {
+        oReq.open(
+          "GET",
+          data.config.apiUrl + keywords.keywords.split(" ").join(" ")
+        );
+        oReq.send();
+      });
+    });
+  }
+  receiveResponse(msg, peer) {
+    console.log("Response receivd from: " + peer);
+    console.log(msg);
+    this.getCurrentTab().then((tabs) => {
+      browser.tabs.sendMessage(tabs[0].id, {
+        call: "presentRelatedNews",
+        args: { news: msg.news, topics: msg.keywords, peer: peer },
+      });
+    });
+  }
+
+  setPeers(event) {
+    self = extension;
+    try {
+      let listaUsuarios = extension.getDataCallBack();
+      console.log("Usuarios peers");
+      console.log(listaUsuarios);
+      self.peers = [];
+      for (let i in listaUsuarios) {
+        if (listaUsuarios.hasOwnProperty(i)) {
+          self.peers.push(listaUsuarios[i]);
+        }
+      }
+    } catch (e) {
+      console.log("Error al cargar lista de usuarios");
+      console.log(e);
+    }
+  }*/
 }
 
 var extension = new BackgroundResult();
