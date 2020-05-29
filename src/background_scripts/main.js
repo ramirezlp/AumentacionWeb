@@ -4,7 +4,7 @@ class SearchEngine {
       throw new Error("Abstract classes can't be instantiated.");
     }
   }
-  retrieveSearch(data) {
+  async retrieveSearch(data) {
     var oReq = new XMLHttpRequest();
     oReq.open("GET", this.searchUrl + data, false);
     oReq.setRequestHeader("Access-Control-Allow-Origin", "*");
@@ -133,21 +133,33 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
 
   //-----------Busca para agregar iconos-----------//
   retrieveSearchResults(args) {
+    startPeers(this);
     var busqueda = this.parsearString(args[0]);
+    var docs;
     if (args[1] == "GoogleEngine") {
       var engine = new GoogleEngine();
       engine.addIcons(args[0], new BingEngine(), new DuckDuckGoEngine());
+      docs = { buscadorUtilizado: "GoogleEngine", metodo: "retrieveSearch" };
     } else {
       if (args[1] == "BingEngine") {
         var engine = new BingEngine();
         engine.addIcons(args[0], new GoogleEngine(), new DuckDuckGoEngine());
+        docs = { buscadorUtilizado: "BingEngine", metodo: "retrieveSearch" };
       } else {
         if (args[1] == "DuckDuckGoEngine") {
           var engine = new DuckDuckGoEngine();
           engine.addIcons(args[0], new GoogleEngine(), new BingEngine());
+          docs = {
+            buscadorUtilizado: "DuckDuckGoEngine",
+            metodo: "retrieveSearch",
+          };
         }
       }
     }
+    docs.dato = args[0];
+    docs.automatic = true;
+    docs.withoutcheck = true;
+    this.sendRequest(docs, "All");
   }
 
   parsearString(busqueda) {
@@ -158,66 +170,6 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     return browser.tabs.query({
       active: true,
       currentWindow: true,
-    });
-  }
-  async automaticProcessing(msg, peer) {
-    console.log("Automatic procesing request...");
-    console.log("Pedido de: " + peer);
-    await this.retrieveNewsFromAPI(msg.keywords).then((jsonNews) => {
-      console.log("News obtained, preparing to send response");
-      console.log(jsonNews);
-      this.sendResponse(
-        {
-          news: jsonNews,
-          keywords: msg.keywords,
-          automatic: true,
-          withoutcheck: true,
-        },
-        peer
-      );
-      console.log("Response sent");
-    });
-  }
-  /*
-  async retrieveNewsFromAPI(keywords) {
-    return new Promise((resolve, reject) => {
-      var oReq = new XMLHttpRequest();
-      oReq.onload = function (e) {
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(oReq.response, "text/html");
-        browser.storage.local.get("config").then((data) => {
-          var news = doc.querySelectorAll(data.config.apiXpath);
-          var jsonNews = [];
-          news.forEach((elem) =>
-            jsonNews.push({
-              text: elem.getElementsByTagName("a")[0].innerText,
-              url: elem.getElementsByTagName("a")[0].href,
-            })
-          );
-          resolve(jsonNews);
-        });
-      };
-      oReq.onerror = function (e) {
-        resolve([]);
-        console.log(e);
-      };
-      browser.storage.local.get("config").then((data) => {
-        oReq.open(
-          "GET",
-          data.config.apiUrl + keywords.keywords.split(" ").join(" ")
-        );
-        oReq.send();
-      });
-    });
-  }
-  receiveResponse(msg, peer) {
-    console.log("Response receivd from: " + peer);
-    console.log(msg);
-    this.getCurrentTab().then((tabs) => {
-      browser.tabs.sendMessage(tabs[0].id, {
-        call: "presentRelatedNews",
-        args: { news: msg.news, topics: msg.keywords, peer: peer },
-      });
     });
   }
 
@@ -237,10 +189,56 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
       console.log("Error al cargar lista de usuarios");
       console.log(e);
     }
-  }*/
-}
+  }
 
+  async automaticProcessing(msg, peer) {
+    console.log("Automatic procesing request...");
+    console.log("Pedido de: " + peer);
+    if (msj.metodo == "retrieveSearch") {
+      if (msj.buscadorUtilizado == "GoogleEngine") {
+        var engine = GoogleEngine();
+      } else {
+        if (msj.buscadorUtilizado == "BingEngine") {
+          var engine = BingEngine();
+        } else {
+          var engine = DuckDuckGoEngine();
+        }
+      }
+      await engine.retrieveSearch(msg.dato).then((jsonNews) => {
+        console.log("News obtained, preparing to send response");
+        console.log(jsonNews);
+        this.sendResponse(
+          {
+            metodo: "engineResults",
+            results: jsonNews,
+            automatic: true,
+            withoutcheck: true,
+          },
+          peer
+        );
+        console.log("Response sent");
+      });
+    }
+  }
+
+  receiveResponse(msg, peer) {
+    console.log("Response receivd from: " + peer);
+    console.log(msg);
+    if ((msj.metodo = "engineResults")) {
+      this.getCurrentTab().then((tabs) => {
+        browser.tabs.sendMessage(tabs[0].id, {
+          call: msj.metodo,
+          args: { results: msj.results, peer: peer },
+        });
+      });
+    }
+  }
+}
 var extension = new BackgroundResult();
+extension.connect();
+var startPeers = async function (extension) {
+  await extension.getPeers(extension.setPeers);
+};
 browser.browserAction.onClicked.addListener(() => {});
 
 browser.runtime.onMessage.addListener((request, sender) => {
