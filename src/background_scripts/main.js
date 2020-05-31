@@ -4,7 +4,20 @@ class SearchEngine {
       throw new Error("Abstract classes can't be instantiated.");
     }
   }
-  async retrieveSearch(data) {
+  async asyncRetrieveSearch(data) {
+    var oReq = new XMLHttpRequest();
+    oReq.open("GET", this.searchUrl + data, false);
+    oReq.setRequestHeader("Access-Control-Allow-Origin", "*");
+    oReq.send();
+    var parser = new DOMParser();
+    var responseDoc = parser.parseFromString(oReq.response, "text/html");
+    var organicResults = responseDoc.getElementsByClassName(
+      this.organicResultClass
+    );
+    return this.getResults(organicResults);
+  }
+
+  retrieveSearch(data) {
     var oReq = new XMLHttpRequest();
     oReq.open("GET", this.searchUrl + data, false);
     oReq.setRequestHeader("Access-Control-Allow-Origin", "*");
@@ -33,18 +46,22 @@ class SearchEngine {
   addIcons(data, searchEngine1, searchEngine2) {
     var results1 = searchEngine1.retrieveSearch(data);
     var results2 = searchEngine2.retrieveSearch(data);
-
     extension.getCurrentTab().then((tabs) => {
-      browser.tabs.sendMessage(tabs[0].id, {
-        call: "addIcons",
-        args: [
-          results1,
-          results2,
-          searchEngine1.img,
-          searchEngine2.img,
-          this.organicResultClass,
-        ],
-      });
+      browser.tabs.sendMessage(
+        tabs[0].id,
+        JSON.parse(
+          JSON.stringify({
+            call: "addIcons",
+            args: [
+              results1,
+              results2,
+              searchEngine1.img,
+              searchEngine2.img,
+              this.organicResultClass,
+            ],
+          })
+        )
+      );
     });
   }
 }
@@ -139,19 +156,25 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     if (args[1] == "GoogleEngine") {
       var engine = new GoogleEngine();
       engine.addIcons(args[0], new BingEngine(), new DuckDuckGoEngine());
-      docs = { buscadorUtilizado: "GoogleEngine", metodo: "retrieveSearch" };
+      docs = {
+        buscadorUtilizado: "GoogleEngine",
+        metodo: "asyncRetrieveSearch",
+      };
     } else {
       if (args[1] == "BingEngine") {
         var engine = new BingEngine();
         engine.addIcons(args[0], new GoogleEngine(), new DuckDuckGoEngine());
-        docs = { buscadorUtilizado: "BingEngine", metodo: "retrieveSearch" };
+        docs = {
+          buscadorUtilizado: "BingEngine",
+          metodo: "asyncRetrieveSearch",
+        };
       } else {
         if (args[1] == "DuckDuckGoEngine") {
           var engine = new DuckDuckGoEngine();
           engine.addIcons(args[0], new GoogleEngine(), new BingEngine());
           docs = {
             buscadorUtilizado: "DuckDuckGoEngine",
-            metodo: "retrieveSearch",
+            metodo: "asyncRetrieveSearch",
           };
         }
       }
@@ -194,17 +217,17 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
   async automaticProcessing(msg, peer) {
     console.log("Automatic procesing request...");
     console.log("Pedido de: " + peer);
-    if (msj.metodo == "retrieveSearch") {
-      if (msj.buscadorUtilizado == "GoogleEngine") {
+    if (msg.metodo == "retrieveSearch") {
+      if (msg.buscadorUtilizado == "GoogleEngine") {
         var engine = GoogleEngine();
       } else {
-        if (msj.buscadorUtilizado == "BingEngine") {
+        if (msg.buscadorUtilizado == "BingEngine") {
           var engine = BingEngine();
         } else {
           var engine = DuckDuckGoEngine();
         }
       }
-      await engine.retrieveSearch(msg.dato).then((jsonNews) => {
+      await engine.asyncRetrieveSearch(msg.dato).then((jsonNews) => {
         console.log("News obtained, preparing to send response");
         console.log(jsonNews);
         this.sendResponse(
@@ -224,11 +247,11 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
   receiveResponse(msg, peer) {
     console.log("Response receivd from: " + peer);
     console.log(msg);
-    if ((msj.metodo = "engineResults")) {
+    if ((msg.metodo = "engineResults")) {
       this.getCurrentTab().then((tabs) => {
         browser.tabs.sendMessage(tabs[0].id, {
-          call: msj.metodo,
-          args: { results: msj.results, peer: peer },
+          call: msg.metodo,
+          args: { results: msg.results, peer: peer },
         });
       });
     }
