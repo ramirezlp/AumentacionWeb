@@ -29,7 +29,7 @@ class SearchEngineContent {
     divSpan.textContent = "1 de 10";
     divSpan.style.marginTop = "20px";
     var span = document.createElement("span");
-    span.style.backgroundColor = #FFF;
+    span.style.backgroundColor = "#FFF";
     span.style.height = "60px";
     span.style.width = "60px";
     span.style.borderStyle = "solid";
