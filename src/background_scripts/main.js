@@ -244,7 +244,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     }
   }
 
-  receiveResponse(msg, peer) {
+  async receiveResponse(msg, peer) {
     console.log("Response receivd from: " + peer);
     console.log(msg);
     if ((msg.metodo = "engineResults")) {
