@@ -24,6 +24,26 @@ class SearchEngineContent {
     return div;
   }
 
+  createPeersIcon() {
+    var divSpan = document.createElement("div");
+    divSpan.textContent = "1 de 10";
+    divSpan.style.marginTop = "20px";
+    var span = document.createElement("span");
+    span.style.backgroundColor = #FFF;
+    span.style.height = "60px";
+    span.style.width = "60px";
+    span.style.borderStyle = "solid";
+    span.style.borderRadius = "50%";
+    span.style.display = "inline-block";
+    span.appendChild(divSpan);
+    var div = document.createElement("div");
+    div.classList.add("col-sm-2");
+    div.classList.add("container");
+    div.appendChild(span);
+
+    return div;
+  }
+
   takeResultPosition(results, element) {
     var position = 0;
     var exist = 0;
@@ -61,6 +81,7 @@ class SearchEngineContent {
 
       divrow.appendChild(this.createIcon(args[2], existOne));
       divrow.appendChild(this.createIcon(args[3], existTwo));
+      //divrow.appendChild(this.createPeersIcon());
 
       var divcon = document.createElement("div");
       divcon.classList.add("container");
