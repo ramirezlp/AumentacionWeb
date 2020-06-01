@@ -217,21 +217,20 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
   async automaticProcessing(msg, peer) {
     console.log("Automatic procesing request...");
     console.log("Pedido de: " + peer);
-    if (msg.metodo == "retrieveSearch") {
+    if (msg.metodo == "asyncRetrieveSearch") {
       if (msg.buscadorUtilizado == "GoogleEngine") {
-        var engine = GoogleEngine();
+        var engine = new GoogleEngine();
       } else {
         if (msg.buscadorUtilizado == "BingEngine") {
-          var engine = BingEngine();
+          var engine = new BingEngine();
         } else {
-          var engine = DuckDuckGoEngine();
+          var engine = new DuckDuckGoEngine();
         }
       }
       await engine.asyncRetrieveSearch(msg.dato).then((jsonNews) => {
         console.log("News obtained, preparing to send response");
         console.log(jsonNews);
-        this.sendResponse(
-          {
+        this.sendResponse({
             metodo: "engineResults",
             results: jsonNews,
             automatic: true,
@@ -251,7 +250,10 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
       this.getCurrentTab().then((tabs) => {
         browser.tabs.sendMessage(tabs[0].id, {
           call: msg.metodo,
-          args: { results: msg.results, peer: peer },
+          args: {
+            results: msg.results,
+            peer: peer
+          },
         });
       });
     }
