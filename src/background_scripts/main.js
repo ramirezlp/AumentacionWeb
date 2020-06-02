@@ -43,7 +43,7 @@ class SearchEngine {
     return results;
   }
 
-  addIcons(data, searchEngine1, searchEngine2) {
+  addIcons(data, searchEngine1, searchEngine2, totalPeers) {
     var results1 = searchEngine1.retrieveSearch(data);
     var results2 = searchEngine2.retrieveSearch(data);
     extension.getCurrentTab().then((tabs) => {
@@ -58,6 +58,7 @@ class SearchEngine {
               searchEngine1.img,
               searchEngine2.img,
               this.organicResultClass,
+              totalPeers
             ],
           })
         )
@@ -155,7 +156,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     var docs;
     if (args[1] == "GoogleEngine") {
       var engine = new GoogleEngine();
-      engine.addIcons(args[0], new BingEngine(), new DuckDuckGoEngine());
+      engine.addIcons(args[0], new BingEngine(), new DuckDuckGoEngine(), this.peers.length);
       docs = {
         buscadorUtilizado: "GoogleEngine",
         metodo: "asyncRetrieveSearch",
@@ -163,7 +164,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     } else {
       if (args[1] == "BingEngine") {
         var engine = new BingEngine();
-        engine.addIcons(args[0], new GoogleEngine(), new DuckDuckGoEngine());
+        engine.addIcons(args[0], new GoogleEngine(), new DuckDuckGoEngine(), this.peers.length);
         docs = {
           buscadorUtilizado: "BingEngine",
           metodo: "asyncRetrieveSearch",
@@ -171,7 +172,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
       } else {
         if (args[1] == "DuckDuckGoEngine") {
           var engine = new DuckDuckGoEngine();
-          engine.addIcons(args[0], new GoogleEngine(), new BingEngine());
+          engine.addIcons(args[0], new GoogleEngine(), new BingEngine(), this.peers.length);
           docs = {
             buscadorUtilizado: "DuckDuckGoEngine",
             metodo: "asyncRetrieveSearch",
@@ -233,6 +234,8 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
         this.sendResponse({
             metodo: "engineResults",
             results: jsonNews,
+            buscador: msg.buscadorUtilizado,
+            className: engine.organicResultClass,
             automatic: true,
             withoutcheck: true,
           },
@@ -252,6 +255,8 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
           call: msg.metodo,
           args: {
             results: msg.results,
+            buscador: msg.buscador,
+            className: msg.className,
             peer: peer
           },
         });
