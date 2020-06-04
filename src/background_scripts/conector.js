@@ -68,7 +68,6 @@ class ConectorP2P{
 	
 	constructor(){
 		try {
-
 			this.extensionParent="";
 			this.port=null;
 			this.extensionName=""
