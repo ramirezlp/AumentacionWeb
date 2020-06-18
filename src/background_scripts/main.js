@@ -58,7 +58,7 @@ class SearchEngine {
               searchEngine1.img,
               searchEngine2.img,
               this.organicResultClass,
-              totalPeers
+              totalPeers,
             ],
           })
         )
@@ -136,6 +136,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
 
   //-----------Busca para el PopUp-----------//
   popUpResults(data) {
+    startPeers(this);
     data = extension.parsearString(data);
     var google = new GoogleEngine();
     var resultsGoogle = google.mashupResults(data);
@@ -143,9 +144,16 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     var resultsBing = bing.mashupResults(data);
     var duckDuckGo = new DuckDuckGoEngine();
     var resultsDuckDuckGo = duckDuckGo.mashupResults(data);
+    var mashupResults = [resultsGoogle, resultsBing, resultsDuckDuckGo];
+    this.sendRequest({
+      dato: mashupResults,
+      automatic: true,
+      withoutcheck: true,
+      metodo: "popUpResultsPeer",
+    });
     browser.runtime.sendMessage({
       call: "obtengoDatos",
-      args: [resultsGoogle, resultsBing, resultsDuckDuckGo],
+      args: mashupResults,
     });
   }
 
@@ -156,7 +164,12 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     var docs;
     if (args[1] == "GoogleEngine") {
       var engine = new GoogleEngine();
-      engine.addIcons(args[0], new BingEngine(), new DuckDuckGoEngine(), this.peers.length);
+      engine.addIcons(
+        args[0],
+        new BingEngine(),
+        new DuckDuckGoEngine(),
+        this.peers.length
+      );
       docs = {
         buscadorUtilizado: "GoogleEngine",
         metodo: "asyncRetrieveSearch",
@@ -164,7 +177,12 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     } else {
       if (args[1] == "BingEngine") {
         var engine = new BingEngine();
-        engine.addIcons(args[0], new GoogleEngine(), new DuckDuckGoEngine(), this.peers.length);
+        engine.addIcons(
+          args[0],
+          new GoogleEngine(),
+          new DuckDuckGoEngine(),
+          this.peers.length
+        );
         docs = {
           buscadorUtilizado: "BingEngine",
           metodo: "asyncRetrieveSearch",
@@ -172,7 +190,12 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
       } else {
         if (args[1] == "DuckDuckGoEngine") {
           var engine = new DuckDuckGoEngine();
-          engine.addIcons(args[0], new GoogleEngine(), new BingEngine(), this.peers.length);
+          engine.addIcons(
+            args[0],
+            new GoogleEngine(),
+            new BingEngine(),
+            this.peers.length
+          );
           docs = {
             buscadorUtilizado: "DuckDuckGoEngine",
             metodo: "asyncRetrieveSearch",
@@ -231,7 +254,8 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
       await engine.asyncRetrieveSearch(msg.dato).then((jsonNews) => {
         console.log("News obtained, preparing to send response");
         console.log(jsonNews);
-        this.sendResponse({
+        this.sendResponse(
+          {
             metodo: "engineResults",
             results: jsonNews,
             buscador: msg.buscadorUtilizado,
@@ -246,10 +270,10 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     }
   }
 
-  async receiveResponse(msg, peer) {
+  receiveResponse(msg, peer) {
     console.log("Response receivd from: " + peer);
     console.log(msg);
-    if ((msg.metodo = "engineResults")) {
+    if (msg.metodo == "engineResults") {
       this.getCurrentTab().then((tabs) => {
         browser.tabs.sendMessage(tabs[0].id, {
           call: msg.metodo,
@@ -257,7 +281,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
             results: msg.results,
             buscador: msg.buscador,
             className: msg.className,
-            peer: peer
+            peer: peer,
           },
         });
       });
