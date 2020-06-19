@@ -146,6 +146,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     var resultsDuckDuckGo = duckDuckGo.mashupResults(data);
     var mashupResults = [resultsGoogle, resultsBing, resultsDuckDuckGo];
     this.sendRequest({
+      dataSearch: data,
       dato: mashupResults,
       automatic: true,
       withoutcheck: true,
@@ -155,6 +156,37 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
       call: "obtengoDatos",
       args: mashupResults,
     });
+  }
+
+  popUpResultsPeer(data){
+    var google = new GoogleEngine();
+    var resultsGoogle = google.mashupResults(data.dataSearch);
+    var bing = new BingEngine();
+    var resultsBing = bing.mashupResults(data.dataSearch);
+    var duckDuckGo = new DuckDuckGoEngine();
+    var resultsDuckDuckGo = duckDuckGo.mashupResults(data.dataSearch);
+    var resultadosActuales = [resultsGoogle, resultsBing, resultsDuckDuckGo];
+    var dictRespuesta = {
+      google: [0, 0, 0, 0, 0],
+      bing: [0, 0, 0, 0, 0],
+      duckDuckGo: [0, 0, 0, 0, 0],
+    };
+    for (var i=0; i<4; i++){
+      for (var j=0; i<6; i++){
+        encontro=False;
+        var resultadoAAnalizar = resultadosActuales[i][j];
+        for (var index=0; index<data.dato[i].length; index++){
+          if (data.dato[i][index] == resultadoAAnalizar){
+            dictRespuesta[i][j]=index;
+            encontro=True;
+            break;
+          }
+        }
+        if (encontro){
+          break;
+        }
+      }
+    }
   }
 
   //-----------Busca para agregar iconos-----------//
@@ -241,16 +273,16 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
   async automaticProcessing(msg, peer) {
     console.log("Automatic procesing request...");
     console.log("Pedido de: " + peer);
-    if (msg.metodo == "asyncRetrieveSearch") {
-      if (msg.buscadorUtilizado == "GoogleEngine") {
-        var engine = new GoogleEngine();
+    if (msg.buscadorUtilizado == "GoogleEngine") {
+      var engine = new GoogleEngine();
+    } else {
+      if (msg.buscadorUtilizado == "BingEngine") {
+        var engine = new BingEngine();
       } else {
-        if (msg.buscadorUtilizado == "BingEngine") {
-          var engine = new BingEngine();
-        } else {
-          var engine = new DuckDuckGoEngine();
-        }
+        var engine = new DuckDuckGoEngine();
       }
+    }
+    if (msg.metodo == "asyncRetrieveSearch") {
       await engine.asyncRetrieveSearch(msg.dato).then((jsonNews) => {
         console.log("News obtained, preparing to send response");
         console.log(jsonNews);

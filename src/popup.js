@@ -25,6 +25,22 @@ class PopUp {
       }
     }
   }
+
+  obtengoDatosPeers(args) {
+    var engines = {
+      0: "Google",
+      1: "Bing",
+      2: "DuckDuckGo",
+    };
+    for (var key in args) {
+        for (var i = 1; j < 6; j++) {
+            apariciones[key][i-1] += 1;
+            var valorPromedio = apariciones[key][i-1] / peers;
+            var div = document.getElementById(i);
+            div.firstChild.innerHTML = 'Posición promedio ' + valorPromedio + ' (' + apariciones[key][i-1] + ' de ' + peers + ')';
+        }
+    }
+  }
 }
 
 var pageManager = new PopUp();
