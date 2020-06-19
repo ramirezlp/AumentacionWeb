@@ -1,5 +1,6 @@
 class PopUp {
   peers;
+  peersActuales = 0;
   apariciones = {
     google: [0, 0, 0, 0, 0],
     bing: [0, 0, 0, 0, 0],
@@ -60,7 +61,7 @@ class PopUp {
   }
 
   obtengoDatosPeers(args) {
-    console.log("eeeeeeeeeeeeeeeeee");
+    this.peersActuales += 1;
     this.peers = args[1];
     args = args[0];
     var engines = {
@@ -72,15 +73,19 @@ class PopUp {
     for (var key in args) {
       for (var i = 1; i < 6; i++) {
         this.cantApariciones[key][i - 1] += 1;
+        console.log(args[key][i - 1]);
         this.apariciones[key][i - 1] =
-          (this.apariciones[key][i - 1] + args[key][i - 1]) / 2;
+          this.apariciones[key][i - 1] + args[key][i - 1];
+        var promedio =
+          this.apariciones[key][i - 1] / this.peersActuales -
+          (this.apariciones[key][i - 1] % this.peersActuales);
         var div = document.getElementById(i);
         div.getElementsByClassName("peers")[
           engines[key]
         ].textContent = this.peers;
         div.getElementsByClassName("posicionPromedio")[
           engines[key]
-        ].textContent = this.cantApariciones[key][i - 1];
+        ].textContent = promedio;
         div.getElementsByClassName("aparicionesPeers")[
           engines[key]
         ].textContent = this.cantApariciones[key][i - 1];
