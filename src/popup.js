@@ -26,19 +26,32 @@ class PopUp {
     }
   }
 
+  popUpResultsPeerContent(args) {
+    console.log(args);
+  }
+
   obtengoDatosPeers(args) {
+    this.peers = args.peers;
+    args = args.result;
     var engines = {
-      0: "Google",
-      1: "Bing",
-      2: "DuckDuckGo",
+      0: "google",
+      1: "bing",
+      2: "duckDuckGo",
     };
     for (var key in args) {
-        for (var i = 1; j < 6; j++) {
-            apariciones[key][i-1] += 1;
-            var valorPromedio = apariciones[key][i-1] / peers;
-            var div = document.getElementById(i);
-            div.firstChild.innerHTML = 'Posición promedio ' + valorPromedio + ' (' + apariciones[key][i-1] + ' de ' + peers + ')';
-        }
+      for (var i = 1; j < 6; j++) {
+        apariciones[key][i - 1] += 1;
+        var valorPromedio = apariciones[key][i - 1] / peers;
+        var div = document.getElementById(i);
+        div.firstChild.innerHTML =
+          "Posición promedio " +
+          valorPromedio +
+          " (" +
+          apariciones[key][i - 1] +
+          " de " +
+          peers +
+          ")";
+      }
     }
   }
 }
