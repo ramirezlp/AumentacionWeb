@@ -337,9 +337,13 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
         });
       });
     } else {
+      console.log("argssssss", {
+        results: msg.results,
+        peers: this.peers.length,
+      });
       browser.runtime.sendMessage({
         call: msg.metodo,
-        args: { results: msg.results, peers: this.peers.length },
+        args: [msg.results, this.peers.length],
       });
     }
   }
