@@ -39,9 +39,9 @@ class PopUp {
       2: "duckDuckGo",
     };
     for (var key in args) {
-      for (var i = 1; j < 6; j++) {
+      for (var i = 1; i < 6; i++) {
         apariciones[key][i - 1] += 1;
-        var valorPromedio = apariciones[key][i - 1] / peers;
+        var valorPromedio = (apariciones[key][i - 1] + args[key][i - 1])/ 2;
         var div = document.getElementById(i);
         div.firstChild.innerHTML =
           "Posición promedio " +
