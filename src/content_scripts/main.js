@@ -1,4 +1,8 @@
 class SearchEngineContent {
+  peerHeight = "60px";
+  peerWidth = "60px";
+  marginTop = "17px";
+  fontSize = "100%";
   peersCompare = [];
   constructor() {
     if (this.constructor == SearchEngineContent) {
@@ -32,16 +36,17 @@ class SearchEngineContent {
     var elementInsideSpan2 = document.createElement("span");
     elementInsideSpan2.textContent = " de " + totalPeers;
     var divSpan = document.createElement("div");
-    divSpan.style.marginTop = "17px";
-    divSpan.style.color = "#000"
+    divSpan.style.marginTop = this.marginTop;
+    divSpan.style.color = "#000";
     divSpan.appendChild(elementInsideSpan1);
     divSpan.appendChild(elementInsideSpan2);
     var span = document.createElement("span");
     span.style.backgroundColor = "#FFF";
-    span.style.height = "60px";
-    span.style.width = "60px";
+    span.style.height = this.peerHeight;
+    span.style.width = this.peerWidth;
+    span.style.fontSize = this.fontSize;
     span.style.borderStyle = "solid";
-    span.style.borderColor = "#000"
+    span.style.borderColor = "#000";
     span.style.borderRadius = "50%";
     span.style.display = "inline-block";
     span.appendChild(divSpan);
@@ -72,7 +77,7 @@ class SearchEngineContent {
   incrementPeerResult(args) {
     var results = document.getElementsByClassName(args.className);
     for (var i = 0; i < results.length; i++) {
-      console.log('EN EL HTML: ', this.getResultUrl(results[i]));
+      console.log("EN EL HTML: ", this.getResultUrl(results[i]));
       var compare = this.getResultUrl(results[i]).split("https://").join("");
       compare = compare.split("http://").join("").trim();
       for (var key in args.results) {
@@ -81,7 +86,7 @@ class SearchEngineContent {
         if (peerCompare == compare) {
           console.log("COINCIDE");
           this.incrementPeer(results[i]);
-        };
+        }
       }
     }
   }
@@ -140,12 +145,21 @@ class GoogleEngineContent extends SearchEngineContent {
     return result.firstChild.firstChild.getAttribute("href");
   }
   incrementPeer(result) {
-    var spanVariable = result.firstChild.lastChild.getElementsByClassName("result")[0].textContent;
+    var spanVariable = result.firstChild.lastChild.getElementsByClassName(
+      "result"
+    )[0].textContent;
     spanVariable = (parseInt(spanVariable) + 1).toString();
-    result.firstChild.lastChild.getElementsByClassName("result")[0].textContent = spanVariable
+    result.firstChild.lastChild.getElementsByClassName(
+      "result"
+    )[0].textContent = spanVariable;
   }
 }
 class BingEngineContent extends SearchEngineContent {
+  peerHeight = "90px";
+  peerWidth = "90px";
+  marginTop = "27px";
+  fontSize = "80%";
+
   getOrganicElement(result) {
     return result.firstChild.firstChild;
   }
@@ -153,9 +167,13 @@ class BingEngineContent extends SearchEngineContent {
     return result.firstChild.firstChild.getAttribute("href");
   }
   incrementPeer(result) {
-    var spanVariable = result.firstChild.firstChild.getElementsByClassName("result")[0].textContent;
+    var spanVariable = result.firstChild.firstChild.getElementsByClassName(
+      "result"
+    )[0].textContent;
     spanVariable = (parseInt(spanVariable) + 1).toString();
-    result.firstChild.firstChild.getElementsByClassName("result")[0].textContent = spanVariable
+    result.firstChild.firstChild.getElementsByClassName(
+      "result"
+    )[0].textContent = spanVariable;
   }
 }
 class DuckDuckGoEngineContent extends SearchEngineContent {
@@ -166,10 +184,13 @@ class DuckDuckGoEngineContent extends SearchEngineContent {
     return result.childNodes[3].childNodes[1].getAttribute("href");
   }
   incrementPeer(result) {
-    var spanVariable = result.childNodes[3].getElementsByClassName("result")[0].textContent;
+    var spanVariable = result.childNodes[3].getElementsByClassName("result")[0]
+      .textContent;
     console.log(spanVariable);
     spanVariable = (parseInt(spanVariable) + 1).toString();
-    result.childNodes[3].getElementsByClassName("result")[0].textContent = spanVariable
+    result.childNodes[3].getElementsByClassName(
+      "result"
+    )[0].textContent = spanVariable;
   }
 }
 
