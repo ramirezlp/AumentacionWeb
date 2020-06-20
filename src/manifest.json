@@ -45,10 +45,17 @@
 	},
 
 	"permissions": [
-		"notifications",
-		"activeTab",
-		"tabs",
 		"storage",
-		"<all_urls>"
+		"<all_urls>",
+		"webRequest",
+		"webRequestBlocking",
+		"menus",
+		"activeTab",
+		"notifications",
+		"tabs",
+		"find",
+		"clipboardWrite",
+		"contextMenus",
+		"sessions"
 	]
 }

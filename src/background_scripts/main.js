@@ -112,7 +112,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
   }
 
   getExtensionName() {
-    return "aumentacion_web";
+    return "aumentacionweb";
   }
 
   getExtensionId() {
@@ -138,8 +138,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     var duckDuckGo = new DuckDuckGoEngine();
     var resultsDuckDuckGo = duckDuckGo.mashupResults(data);
     var mashupResults = [resultsGoogle, resultsBing, resultsDuckDuckGo];
-    this.sendRequest(
-      {
+    this.sendRequest({
         dataSearch: data,
         dato: mashupResults,
         automatic: true,
@@ -189,8 +188,8 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
   //-----------Busca para agregar iconos-----------//
   retrieveSearchResults(args) {
     startPeers(this);
-    var busqueda = this.parsearString(args[0]);
-    var docs;
+    var buscadorUtilizado;
+    var dataToSearch = args[0];
     if (args[1] == "GoogleEngine") {
       this.engine = new GoogleEngine();
       this.engine.addIcons(
@@ -199,10 +198,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
         new DuckDuckGoEngine(),
         this.peers.length
       );
-      docs = {
-        buscadorUtilizado: "GoogleEngine",
-        metodo: "asyncRetrieveSearch",
-      };
+      buscadorUtilizado = "GoogleEngine";
     } else {
       if (args[1] == "BingEngine") {
         this.engine = new BingEngine();
@@ -212,10 +208,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
           new DuckDuckGoEngine(),
           this.peers.length
         );
-        docs = {
-          buscadorUtilizado: "BingEngine",
-          metodo: "asyncRetrieveSearch",
-        };
+        buscadorUtilizado = "BingEngine";
       } else {
         if (args[1] == "DuckDuckGoEngine") {
           this.engine = new DuckDuckGoEngine();
@@ -225,17 +218,23 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
             new BingEngine(),
             this.peers.length
           );
-          docs = {
-            buscadorUtilizado: "DuckDuckGoEngine",
-            metodo: "asyncRetrieveSearch",
-          };
+          buscadorUtilizado = "DuckDuckGoEngine";
         }
       }
     }
-    docs.dato = args[0];
-    docs.automatic = true;
-    docs.withoutcheck = true;
-    this.sendRequest(docs, "All");
+    try {
+      this.sendRequest({
+          dato: dataToSearch,
+          metodo: 'asyncRetrieveSearch',
+          buscadorUtilizado: buscadorUtilizado,
+          automatic: true,
+          withoutcheck: true,
+        },
+        'All'
+      );
+    } catch (error) {
+      console.log('ERROR!: ', error)
+    }
   }
 
   parsearString(busqueda) {
@@ -287,8 +286,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
       await this.asyncRetrieveSearch(msg.dato).then((jsonNews) => {
         console.log("News obtained, preparing to send response");
         console.log(jsonNews);
-        this.sendResponse(
-          {
+        this.sendResponse({
             metodo: "engineResults",
             results: jsonNews,
             buscador: msg.buscadorUtilizado,
@@ -304,8 +302,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
       await this.popUpResultsPeer(msg).then((jsonNews) => {
         console.log("News obtained, preparing to send response");
         console.log(jsonNews);
-        this.sendResponse(
-          {
+        this.sendResponse({
             metodo: "obtengoDatosPeers",
             results: jsonNews,
             automatic: true,
@@ -345,12 +342,12 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     }
   }
 }
+
 var extension = new BackgroundResult();
 extension.connect();
 var startPeers = async function (extension) {
   await extension.getPeers(extension.setPeers);
 };
-browser.browserAction.onClicked.addListener(() => {});
 
 browser.runtime.onMessage.addListener((request, sender) => {
   console.log("[background-side] calling the message: " + request.call);
