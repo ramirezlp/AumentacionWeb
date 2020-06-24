@@ -1,5 +1,5 @@
 class PopUp {
-  peers;
+  peers = 0;
   peersActuales = 0;
   apariciones = {
     google: [0, 0, 0, 0, 0],
@@ -62,7 +62,7 @@ class PopUp {
 
   obtengoDatosPeers(args) {
     this.peersActuales += 1;
-    this.peers = args[1];
+    this.peers += 1;
     args = args[0];
     var engines = {
       google: 0,
@@ -95,8 +95,7 @@ class PopUp {
 }
 
 var pageManager = new PopUp();
-chrome.tabs.query(
-  {
+chrome.tabs.query({
     active: true,
     currentWindow: true,
   },

@@ -29,17 +29,21 @@ class SearchEngineContent {
     return div;
   }
 
-  createPeersIcon(totalPeers) {
+  createPeersIcon() {
     var elementInsideSpan1 = document.createElement("span");
     elementInsideSpan1.textContent = "0";
     elementInsideSpan1.className = "result";
     var elementInsideSpan2 = document.createElement("span");
-    elementInsideSpan2.textContent = " de " + totalPeers;
+    elementInsideSpan2.textContent = " de ";
+    var elementInsideSpan3 = document.createElement("span");
+    elementInsideSpan3.textContent = "0";
+    elementInsideSpan3.className = "peers"
     var divSpan = document.createElement("div");
     divSpan.style.marginTop = this.marginTop;
     divSpan.style.color = "#000";
     divSpan.appendChild(elementInsideSpan1);
     divSpan.appendChild(elementInsideSpan2);
+    divSpan.appendChild(elementInsideSpan3);
     var span = document.createElement("span");
     span.style.backgroundColor = "#FFF";
     span.style.height = this.peerHeight;
@@ -77,6 +81,7 @@ class SearchEngineContent {
   incrementPeerResult(args) {
     var results = document.getElementsByClassName(args.className);
     for (var i = 0; i < results.length; i++) {
+      this.incrementPeers(results[i], "peers");
       console.log("EN EL HTML: ", this.getResultUrl(results[i]));
       var compare = this.getResultUrl(results[i]).split("https://").join("");
       compare = compare.split("http://").join("").trim();
@@ -85,7 +90,7 @@ class SearchEngineContent {
         peerCompare = peerCompare.split("http://").join("").trim();
         if (peerCompare == compare) {
           console.log("COINCIDE");
-          this.incrementPeer(results[i]);
+          this.incrementPeers(results[i], "result");
         }
       }
     }
@@ -144,13 +149,13 @@ class GoogleEngineContent extends SearchEngineContent {
   getResultUrl(result) {
     return result.firstChild.firstChild.getAttribute("href");
   }
-  incrementPeer(result) {
+  incrementPeers(result, className) {
     var spanVariable = result.firstChild.lastChild.getElementsByClassName(
-      "result"
+      className
     )[0].textContent;
     spanVariable = (parseInt(spanVariable) + 1).toString();
     result.firstChild.lastChild.getElementsByClassName(
-      "result"
+      className
     )[0].textContent = spanVariable;
   }
 }
@@ -166,13 +171,13 @@ class BingEngineContent extends SearchEngineContent {
   getResultUrl(result) {
     return result.firstChild.firstChild.getAttribute("href");
   }
-  incrementPeer(result) {
+  incrementPeers(result, className) {
     var spanVariable = result.firstChild.firstChild.getElementsByClassName(
-      "result"
+      className
     )[0].textContent;
     spanVariable = (parseInt(spanVariable) + 1).toString();
     result.firstChild.firstChild.getElementsByClassName(
-      "result"
+      className
     )[0].textContent = spanVariable;
   }
 }
@@ -183,13 +188,13 @@ class DuckDuckGoEngineContent extends SearchEngineContent {
   getResultUrl(result) {
     return result.childNodes[3].childNodes[1].getAttribute("href");
   }
-  incrementPeer(result) {
-    var spanVariable = result.childNodes[3].getElementsByClassName("result")[0]
+  incrementPeers(result, className) {
+    var spanVariable = result.childNodes[3].getElementsByClassName(className)[0]
       .textContent;
     console.log(spanVariable);
     spanVariable = (parseInt(spanVariable) + 1).toString();
     result.childNodes[3].getElementsByClassName(
-      "result"
+      className
     )[0].textContent = spanVariable;
   }
 }
