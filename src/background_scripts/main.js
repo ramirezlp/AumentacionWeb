@@ -139,11 +139,13 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     var resultsDuckDuckGo = duckDuckGo.mashupResults(data);
     var mashupResults = [resultsGoogle, resultsBing, resultsDuckDuckGo];
     this.sendRequest({
-        dataSearch: data,
-        dato: mashupResults,
+        keywords: {
+          "dataSearch": data,
+          "dato": mashupResults,
+          "metodo": "popUpResultsPeer"
+        },
         automatic: true,
         withoutcheck: true,
-        metodo: "popUpResultsPeer",
       },
       "All"
     );
@@ -224,13 +226,15 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
     }
     try {
       this.sendRequest({
-          dato: dataToSearch,
-          metodo: 'asyncRetrieveSearch',
-          buscadorUtilizado: buscadorUtilizado,
+          keywords: {
+            "dato": dataToSearch,
+            "metodo": "asyncRetrieveSearch",
+            "buscadorUtilizado": buscadorUtilizado
+          },
           automatic: true,
           withoutcheck: true,
         },
-        'All'
+        "All"
       );
     } catch (error) {
       console.log('ERROR!: ', error)
@@ -283,13 +287,13 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
       }
     }
     if (msg.metodo == "asyncRetrieveSearch") {
-      await this.asyncRetrieveSearch(msg.dato).then((jsonNews) => {
+      await this.asyncRetrieveSearch(msg.keywords.dato).then((jsonNews) => {
         console.log("News obtained, preparing to send response");
         console.log(jsonNews);
         this.sendResponse({
             metodo: "engineResults",
             results: jsonNews,
-            buscador: msg.buscadorUtilizado,
+            buscador: msg.keywords.buscadorUtilizado,
             className: this.engine.organicResultClass,
             automatic: true,
             withoutcheck: true,
@@ -299,7 +303,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
         console.log("Response sent");
       });
     } else {
-      await this.popUpResultsPeer(msg).then((jsonNews) => {
+      await this.popUpResultsPeer(msg.keywords).then((jsonNews) => {
         console.log("News obtained, preparing to send response");
         console.log(jsonNews);
         this.sendResponse({
