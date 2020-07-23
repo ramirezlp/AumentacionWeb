@@ -165,11 +165,17 @@ class BingEngineContent extends SearchEngineContent {
   marginTop = "27px";
   fontSize = "80%";
 
-  getOrganicElement(result) {
-    return result.firstChild.firstChild;
+  getOrganicElement(domElement) {
+    if (domElement.firstChild.firstChild.tagName == 'H2') {
+      return domElement.firstChild.firstChild.firstChild;
+    }
+    return domElement.firstChild.firstChild;
   }
-  getResultUrl(result) {
-    return result.firstChild.firstChild.getAttribute("href");
+  getResultUrl(domElement) {
+    if (domElement.firstChild.firstChild.tagName == 'H2') {
+      return domElement.firstChild.firstChild.firstChild.getAttribute("href");
+    }
+    return domElement.firstChild.firstChild.getAttribute("href");
   }
   incrementPeers(result, className) {
     var spanVariable = result.firstChild.firstChild.getElementsByClassName(
