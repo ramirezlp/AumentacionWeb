@@ -272,7 +272,8 @@ if (sitio == "https://www.bing.com") {
     args: [busca, "GoogleEngine"],
   });
 } else {
-  if (document.location == "https://duckduckgo.com/html/") {
+  if (document.location == "https://html.duckduckgo.com/html/") {
+    console.log("Entro a duckduckgo");
     var busca = pageManager.getString("search__input");
     browser.runtime.sendMessage({
       call: "retrieveSearchResults",
