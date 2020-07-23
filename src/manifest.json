@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "Aumentacion",
 	"version": "1.0",
-	"aplications": {
+	"applications": {
 		"gecko": {
 			"id": "aumentacion@web"
 		}
