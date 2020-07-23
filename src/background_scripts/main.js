@@ -89,16 +89,9 @@ class BingEngine extends SearchEngine {
 
   findOrganicTitleUrl(domElement) {
     if (domElement.firstChild.firstChild.tagName == 'DIV') {
-      return domElement.firstChild.firstChild.firstChild;
+      return domElement.firstChild.firstChild.firstChild.firstChild;
     }
     return domElement.firstChild.firstChild;
-  }
-
-  findOrganicUrl(domElement) {
-    if (domElement.firstChild.firstChild.tagName == 'DIV') {
-      return domElement.firstChild.firstChild.firstChild.getAttribute("href");
-    }
-    return domElement.firstChild.firstChild.getAttribute("href");
   }
 
 }
