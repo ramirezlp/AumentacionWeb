@@ -73,7 +73,6 @@ class PopUp {
     for (var key in args) {
       for (var i = 1; i < 6; i++) {
         this.cantApariciones[key][i - 1] += 1;
-        console.log(args[key][i - 1]);
         this.apariciones[key][i - 1] =
           this.apariciones[key][i - 1] + args[key][i - 1];
         var promedio =

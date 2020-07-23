@@ -176,7 +176,7 @@ class BackgroundResult extends AbstractP2PExtensionBackground {
         var resultadoAAnalizar = data.dato[i][j];
         //for (var index = 0; index < resultadosActuales[i].length; index++) {
         for (var index = 0; index < resultadosActuales[i].length; index++) {
-          if (resultadosActuales[i][index] == resultadoAAnalizar) {
+          if (resultadosActuales[i][index] === resultadoAAnalizar) {
             dictRespuesta[buscador[i]][j] = index + 1;
           }
         }
