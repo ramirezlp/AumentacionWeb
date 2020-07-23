@@ -93,6 +93,14 @@ class BingEngine extends SearchEngine {
     }
     return domElement.firstChild.firstChild;
   }
+
+  findOrganicUrl(domElement) {
+    if (domElement.firstChild.firstChild.tagName == 'DIV') {
+      return domElement.firstChild.firstChild.firstChild.getAttribute("href");
+    }
+    return domElement.firstChild.firstChild.getAttribute("href");
+  }
+
 }
 
 class DuckDuckGoEngine extends SearchEngine {
