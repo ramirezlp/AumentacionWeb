@@ -72,12 +72,16 @@ class PopUp {
     console.log(args);
     for (var key in args) {
       for (var i = 1; i < 6; i++) {
-        this.cantApariciones[key][i - 1] += 1;
+        if (args[key][i - 1] != 0) {
+          this.cantApariciones[key][i - 1] += 1;
+        }
         this.apariciones[key][i - 1] =
           this.apariciones[key][i - 1] + args[key][i - 1];
-        var promedio =
-          this.apariciones[key][i - 1] / this.peersActuales -
-          (this.apariciones[key][i - 1] % this.peersActuales);
+        if (this.cantApariciones[key][i - 1] == 0) {
+          var promedio = 0
+        } else {
+          var promedio = ~~(this.apariciones[key][i - 1] / this.cantApariciones[key][i - 1])
+        }
         var div = document.getElementById(i);
         div.getElementsByClassName("peers")[
           engines[key]
